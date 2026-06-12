@@ -1,89 +1,105 @@
-const API = "https://open.er-api.com/v6/latest/USD";
-
-let rates = {};
-let selected = "UZS";
-
-const container = document.querySelector(".money-container");
-
-// 🌍 kurs olish
-async function getRates(){
-  const res = await fetch(API);
-  const data = await res.json();
-  rates = data.rates;
-
-  showRates();
-  autoConvert();
+body{
+  margin:0;
+  font-family:Arial;
+  background:#0b1020;
+  color:white;
+  text-align:center;
+  overflow:hidden;
 }
 
-// 📊 kurslar
-function showRates(){
-
-  const list = [
-    {name:"🇺🇿 O‘zbekiston", cur:"UZS"},
-    {name:"🇺🇸 AQSh", cur:"USD"},
-    {name:"🇪🇺 Yevropa", cur:"EUR"},
-    {name:"🇷🇺 Rossiya", cur:"RUB"}
-  ];
-
-  const box = document.getElementById("rates");
-  box.innerHTML = "";
-
-  list.forEach(c=>{
-    box.innerHTML += `
-      <div class="card">
-        ${c.name} <br>
-        1 USD = ${rates[c.cur]} ${c.cur}
-      </div>
-    `;
-  });
+/* 🌌 fon */
+.bg{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background: radial-gradient(circle at top,#1e293b,#000);
+  z-index:-2;
 }
 
-// 🧮 real-time convert
-document.getElementById("amount").addEventListener("input", autoConvert);
+/* 💵 animatsiya container */
+.money-container{
+  position:fixed;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  z-index:-1;
+}
 
-function autoConvert(){
-  let amount = document.getElementById("amount").value;
+/* 💵 dollar */
+.money{
+  position:absolute;
+  bottom:-50px;
+  font-size:30px;
+  animation:fly linear forwards;
+  opacity:0.8;
+}
 
-  if(!amount){
-    document.getElementById("result").innerText = "";
-    return;
+@keyframes fly{
+  0%{
+    transform:translateY(0);
+    opacity:0;
   }
-
-  let result = amount * rates[selected];
-
-  document.getElementById("result").innerText =
-    `${amount} USD = ${result.toLocaleString()} ${selected}`;
+  10%{opacity:1;}
+  100%{
+    transform:translateY(-110vh) rotate(360deg);
+    opacity:0;
+  }
 }
 
-// 💵 flying money
-function createMoney(){
-  const el = document.createElement("div");
-  el.classList.add("money");
-
-  el.innerText = "💵";
-
-  el.style.left = Math.random() * window.innerWidth + "px";
-  el.style.animationDuration = (3 + Math.random() * 4) + "s";
-  el.style.fontSize = (20 + Math.random() * 30) + "px";
-
-  container.appendChild(el);
-
-  setTimeout(()=>el.remove(), 8000);
+input{
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  width:200px;
+  margin:10px;
 }
 
-// 🔄 start
-setInterval(getRates, 3000);
-setInterval(createMoney, 300);
+#result{
+  color:#00ff88;
+  text-shadow:0 0 10px #00ff88;
+}
 
-getRates();
-const CRYPTO_API = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,ripple&vs_currencies=usd";
+#rates{
+  margin-top:20px;
+}
+.card{
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(0,255,255,0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 
-let crypto = {};
+  padding:18px;
+  margin:12px auto;
+  width:85%;
+  max-width:400px;
 
-async function getCrypto(){
-  const res = await fetch(CRYPTO_API);
-  const data = await res.json();
-  crypto = data;
+  border-radius:18px;
 
-  showCrypto();
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.5),
+    0 0 10px rgba(0,255,255,0.2);
+
+  transition:0.3s;
+
+  text-align:left;
+
+  position:relative;
+  overflow:hidden;
+}
+.card:hover{
+  transform:translateY(-6px) scale(1.02);
+  box-shadow:
+    0 0 20px #00f5ff,
+    0 0 40px #ff00ff;
+  border:1px solid #00f5ff;
+}
+.card{
+  font-size:16px;
+  line-height:1.6;
+  color:white;
+}
+.card b{
+  color:#00ff88;
+  text-shadow:0 0 10px #00ff88;
+  font-size:18px;
 }
